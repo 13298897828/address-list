@@ -1,26 +1,231 @@
-# Xcode
-#
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
+//
+//  main.m
+//  TongXun
+//
+//  Created by 张天琦 on 15/8/19.
+//  Copyright (c) 2015年 张天琦. All rights reserved.
+//
 
-# CocoaPods
-#
-# We recommend against adding the Pods directory to your .gitignore. However
-# you should judge for yourself, the pros and cons are mentioned at:
-# http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
-#
-#Pods/
+#import <Foundation/Foundation.h>
+#import "AddressContact.h"
+#import "ChangeContact.h"
+int main(int argc, const char * argv[]) {
+    NSArray *keyArray = [NSArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z", nil];
+    NSArray *valueArray = [NSArray arrayWithObjects:[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array],[NSMutableArray array], nil];
+    
+    NSMutableDictionary *Mudic = [[NSMutableDictionary alloc] initWithObjects:valueArray forKeys:keyArray];
+       AddressContact * a1 = [[AddressContact alloc]initWithName:@"CBhah" phoneNum:313456434];
+       AddressContact * a2 = [[AddressContact alloc]initWithName:@"DaBhah" phoneNum:613456434];
+       AddressContact * a3 = [[AddressContact alloc]initWithName:@"CefBahah" phoneNum:87134564];
+       AddressContact * a4 = [[AddressContact alloc]initWithName:@"CfBhah" phoneNum:914534564];
+    a2.gender = @"nv";
+    a2.age = 18;
+    a2.address = @"BeiJing";
+    a3.gender = @"nv";
+    a3.age = 19;
+    [[ChangeContact alloc]addPersonToContact:a2 ToDic:Mudic];
+    [[ChangeContact alloc]addPersonToContact:a1 ToDic:Mudic];
+    [[ChangeContact alloc]addPersonToContact:a3 ToDic:Mudic];
+    [[ChangeContact alloc]addPersonToContact:a4 ToDic:Mudic];
+    NSLog(@"%@",[Mudic allValues]);
+    NSLog(@"首字母是C的有:");
+    [[ChangeContact alloc]getPersonFromContactGroup:@"C" ToDic:Mudic];
+    NSLog(@"%@",[Mudic valueForKey:@"C"]);
+  
+    NSLog(@"查找电话号为313456434的是:");
+    [[ChangeContact alloc]FindPersonFromContactPhone:313456434 ToDic:Mudic];
+    NSLog(@"女士:");
+    [[ChangeContact alloc]FindWomanFromContacFromDic:Mudic];
+    [[ChangeContact alloc]DeletePersonFormContactName:@"CfBhah" FromDic:Mudic];
+    
+    NSLog(@"删除C分组");
+    [[ChangeContact alloc]DeleteGroup:@"C" FromDic:Mudic];
+//    [keyArray arrayByAddingObject:@"C"];
+    NSLog(@"%@",Mudic);
+    
+    
+    
+    
+    
+    
+    
+    return 0;
+}
+
+
+
+
+
+
+
+//
+//  ChangeContact.m
+//  TongXun
+//
+//  Created by 张天琦 on 15/8/20.
+//  Copyright (c) 2015年 张天琦. All rights reserved.
+//
+
+#import "ChangeContact.h"
+#import "AddressContact.h"
+@implementation ChangeContact
+-(void)addPersonToContact:(AddressContact *)person ToDic:(NSMutableDictionary *)muDic{
+    NSArray *arr =[muDic allKeys];
+    for (id arr1 in arr) {
+        if (person.name != nil && person.phoneNum ) {
+            if ([person.name hasPrefix:arr1]) {
+                [[muDic valueForKey:arr1] addObject:person];
+                break;
+            }
+            
+        }
+        
+    }
+}
+
+
+
+
+-(void)getPersonFromContactGroup:(NSString *)group ToDic:(NSMutableDictionary *)muDic{
+    NSMutableArray * groupArray = [muDic valueForKey:group];
+    AddressContact *temp = [[AddressContact alloc]init];
+    AddressContact *temp1 = [[AddressContact alloc]init];
+    AddressContact *temp2 = [[AddressContact alloc]init];
+    
+    for (int i = 0; i < [groupArray count]; i ++) {
+        temp = groupArray[i];
+        temp1 =groupArray[i];
+        if ([temp.name compare:temp1.name]>0) {
+            temp2 =groupArray[i];
+            groupArray[i] =groupArray[i+1];
+            groupArray[i+1] =temp2;
+        }
+        
+    }
+    
+    
+    
+    
+}
+
+
+
+//方法实现
+-(void)FindPersonFromContactPhone:(int)phoneNum ToDic:(NSMutableDictionary *)muDic{
+    
+    NSArray * arr= [muDic allValues];
+    NSMutableArray * temp = [[NSMutableArray alloc]init];
+    for (int i = 0; i < [arr count]; i ++) {
+        [temp setArray:arr[i]];
+        for (int j = 0; j < [temp count]; j ++) {
+            AddressContact * s =temp[j];
+            if (s.phoneNum == phoneNum) {
+                NSLog(@"%@",s);
+            }
+        }
+    }
+    
+    
+}
+
+
+//+ (void) getAllWomanAndSort:(NSMutableDictionary *) dictionary
+//{
+//    NSArray *array = [dictionary allValues];
+//    NSMutableArray *valueArray = [[NSMutableArray alloc] init];
+//    GPAddressContact *WomanPerson = [[GPAddressContact alloc] init];
+//    NSMutableArray *resuleWomanPerson = [NSMutableArray array];
+//    for (int i = 0; i < [array count]; i ++) {
+//        valueArray = array[i];
+//        for (int j = 0; j < [valueArray count]; j ++) {
+//            WomanPerson = valueArray[j];
+//            if ([WomanPerson.gender isEqualToString:@"Female"]) {
+//                [resuleWomanPerson addObject:WomanPerson];
+//            }
+//        }
+//    }
+
+-(void)FindWomanFromContacFromDic:(NSMutableDictionary *)muDic{
+    NSMutableArray * women = [[NSMutableArray alloc]init];
+    
+    NSArray * arr = [muDic allValues];
+    
+    NSMutableArray * temp = [[NSMutableArray alloc]init];
+    for (int i = 0 ; i < [arr count]; i ++)
+    {
+        [temp setArray:arr[i]];
+        for (int j = 0; j < [temp count]; j ++)
+        {
+            AddressContact * s =temp[j];
+            if ([[s gender] isEqualToString:@"nv"])
+            {
+                [women addObject:temp[j]];
+                //                NSLog(@"%@",s);
+            }
+        }
+        
+    }
+    [women sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 age]<[obj2 age];
+    }];
+    NSLog(@"%@",women);
+    
+    
+}
+
+
+//+ (void) deletePersonByName:(NSString *) delectName
+//        NSMutableDictionary:(NSMutableDictionary *) dictionary
+//{
+//    NSArray *array = [dictionary allValues];
+//    NSMutableArray *valueArray = [[NSMutableArray alloc] init];
+//    for (int i = 0; i < (int)[array count]; i ++) {
+//        valueArray = array[i];
+//        for (int j = 0; j < (int)[valueArray count]; j ++) {
+//            GPAddressContact * deletePerson = valueArray[j];
+//            if ([deletePerson.name isEqualToString:delectName]) {
+//                [valueArray removeObject:deletePerson];
+//                NSLog(@"删除成功.");
+//            }
+//        }
+//    }
+//
+//
+//}
+
+
+-(void)DeletePersonFormContactName:(NSString *)deleteName FromDic:(NSMutableDictionary *)muDic{
+    NSArray * arr =[muDic allValues];
+    NSMutableArray * temp = [[NSMutableArray alloc]init];
+    for (int i = 0; i < (int)[arr count]; i ++) {
+        //        [temp setArray:arr[i]];
+        temp = arr[i];
+        for (int j = 0 ; j < [temp count]; j ++) {
+            AddressContact * s =temp[j];
+            if ([s.name isEqualToString:deleteName]) {
+                [temp removeObject:s];
+                
+            }
+            
+        }
+    }
+    NSLog(@"剩余的有%@",muDic);
+    
+    //            [muDic removeObjectForKey:temp];
+}
+
+-(void)DeleteGroup:(NSString *)group FromDic:(NSMutableDictionary * )muDic{
+    NSArray  * arr= [muDic  allKeys];
+    NSMutableString * temp =[[NSMutableString alloc]init];
+    for (int i = 0; i < [arr count]; i ++) {
+        temp = arr[i];
+        if ([temp isEqualToString:group]) {
+            [[muDic valueForKey:group] removeAllObjects];
+        }
+    }
+    
+    
+    
+}
+
+@end
